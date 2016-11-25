@@ -59,6 +59,7 @@ public class AuctionHouseServer {
 		} 
 		catch (Exception e) {
 			System.out.println("Server Error: " + e);
+			System.exit(5);
 		}
 
 		Runtime.getRuntime().addShutdownHook(new ShutdownSaver(houseimpl));

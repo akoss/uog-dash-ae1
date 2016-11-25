@@ -44,16 +44,19 @@ public class AuctionHouseClient implements Serializable {
 			System.out.println();
 			System.out.println("MalformedURLException");
 			System.out.println(murle);
+			System.exit(2);
 		}
 		catch (RemoteException re) {
 			System.out.println();
 			System.out.println("RemoteException");
 			System.out.println(re);
+			System.exit(3);
 		}
 		catch (NotBoundException nbe) {
 			System.out.println();
 			System.out.println("NotBoundException");
 			System.out.println(nbe);
+			System.exit(4);
 		}
 
 		AuctionHouseClient client = new AuctionHouseClient(house, null); 
