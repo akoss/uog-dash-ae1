@@ -73,6 +73,9 @@ public class AuctionImpl implements Auction, Serializable {
     }
 
     public double currentBid(String bidder) throws java.rmi.RemoteException {
+        if(!bids.containsKey(bidder)) {
+            System.err.println("nincs ott geci");
+        }
         return bids.containsKey(bidder) ? bids.get(bidder).getBid() : 0;
     }
 
@@ -137,7 +140,7 @@ public class AuctionImpl implements Auction, Serializable {
 
     public boolean bid(String bidder, double amount) throws java.rmi.RemoteException {
         if(!this.acceptsBids() || this.currentBid(bidder) >= amount) return false; 
-
+        System.err.println("** adding " + bidder + "/" + amount);
         bids.put(bidder, new Bid(bidder, amount, Calendar.getInstance().getTime()));
         return true; 
     }

@@ -7,12 +7,12 @@ import java.util.Scanner;
 import java.util.Calendar;
 import java.util.Map;
 
-public class AuctionHouseClient {
+public class AuctionHouseClient implements Serializable {
 
 	private AuctionHouse house; 
 	private String uid; 
-	private Scanner sc; 
-	private Thread messageProcessor; 
+	private transient Scanner sc; 
+	private transient Thread messageProcessor; 
 
 	public AuctionHouseClient(AuctionHouse house, String uid) {
 		super();
@@ -58,6 +58,7 @@ public class AuctionHouseClient {
 
 		AuctionHouseClient client = new AuctionHouseClient(house, null); 
 		client.askForUid();
+
 		boolean keepRunning = true;
 		while(keepRunning) {
 			keepRunning = client.menu();
@@ -117,7 +118,7 @@ public class AuctionHouseClient {
 		+ ("\nCurrently accepts bids: " + (auction.acceptsBids() ? "yes" : "no"))
 		+ ("\nUploaded by: " + auction.uploader())
 		+ (uid != null ? ("\nMy current bid: " + auction.currentBid(uid)) : "")
-		+ (auction.getWinnerBidString() != null ? ("\nWinning bid: " + auction.getWinnerBidString()) : "");
+		+ (auction.winnerBidder() != null ? ("\nWinning bid: " + auction.getWinnerBidString()) : "");
 	}
 
 	private boolean menu() {
@@ -125,6 +126,7 @@ public class AuctionHouseClient {
 		System.out.println("2 - View Auction by ID");
 		System.out.println("3 - Add Auction");
 		System.out.println("");
+		System.out.println("8 - Save State Now");
 		System.out.println("9 - System Status");
 		System.out.println("0 - Exit");
 
@@ -147,7 +149,7 @@ public class AuctionHouseClient {
 					}
 				}
 				catch(RemoteException e) {
-					System.out.println("Unable to view auctions");
+					System.out.println("Unable to view auctions: " + e);
 				}
 			break; 
 
@@ -171,7 +173,7 @@ public class AuctionHouseClient {
 					}
 				}
 				catch(RemoteException e) {
-					System.out.println("Unable to display this auction");
+					System.out.println("Unable to display this auction: " + e);
 				}
 				
 			break;
@@ -189,7 +191,8 @@ public class AuctionHouseClient {
 					System.out.println("Unable to create new auction");
 				}
 				break;
-
+			case "8":
+				break;
 			case "0":
 				toReturn = false;
 				break;
