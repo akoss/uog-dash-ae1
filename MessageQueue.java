@@ -1,6 +1,7 @@
 import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedTransferQueue; 
+import java.util.Map;
 
 public class MessageQueue implements Serializable {
 
@@ -24,5 +25,12 @@ public class MessageQueue implements Serializable {
         }
         return map.get(whom).take();
     }
-}
 
+    public int numberOfConnections() {
+        int i = 0;
+        for(Map.Entry<String, LinkedTransferQueue<String>> entry : map.entrySet()) {
+            i += entry.getValue().getWaitingConsumerCount();
+        }
+        return i; 
+    }
+}

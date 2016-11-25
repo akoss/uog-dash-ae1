@@ -108,7 +108,7 @@ public class AuctionImpl implements Auction, Serializable {
 
         isFinished = true; 
         q.put(uploader, "Bidding ended for your auction / " + getWinnerBidString());
-        System.out.println(this.getWinnerBidString());
+        System.out.println("Bid finished: " + this.getWinnerBidString());
     }
 
     public String getWinnerBidString() {
@@ -137,7 +137,7 @@ public class AuctionImpl implements Auction, Serializable {
 
     public boolean bid(String bidder, double amount) throws java.rmi.RemoteException {
         if(!this.acceptsBids() || this.currentBid(bidder) >= amount) return false; 
-        System.err.println("** adding " + bidder + "/" + amount);
+        System.out.println("New bid from " + bidder + " / amount " + amount);
         bids.put(bidder, new Bid(bidder, amount, Calendar.getInstance().getTime()));
         return true; 
     }

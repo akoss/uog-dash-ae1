@@ -41,21 +41,21 @@ public class AuctionHouseClient implements Serializable {
 			house = (AuctionHouse) Naming.lookup("rmi://" + reg_host + ":" + reg_port + "/AuctionHouseService");
 		}
 		catch (MalformedURLException murle) {
-			System.out.println();
-			System.out.println("MalformedURLException");
-			System.out.println(murle);
+			System.err.println();
+			System.err.println("MalformedURLException");
+			System.err.println(murle);
 			System.exit(2);
 		}
 		catch (RemoteException re) {
-			System.out.println();
-			System.out.println("RemoteException");
-			System.out.println(re);
+			System.err.println();
+			System.err.println("RemoteException");
+			System.err.println(re);
 			System.exit(3);
 		}
 		catch (NotBoundException nbe) {
-			System.out.println();
-			System.out.println("NotBoundException");
-			System.out.println(nbe);
+			System.err.println();
+			System.err.println("NotBoundException");
+			System.err.println(nbe);
 			System.exit(4);
 		}
 
@@ -129,7 +129,6 @@ public class AuctionHouseClient implements Serializable {
 		System.out.println("2 - View Auction by ID");
 		System.out.println("3 - Add Auction");
 		System.out.println("");
-		System.out.println("8 - Save State Now");
 		System.out.println("9 - System Status");
 		System.out.println("0 - Exit");
 
@@ -194,7 +193,14 @@ public class AuctionHouseClient implements Serializable {
 					System.out.println("Unable to create new auction");
 				}
 				break;
-			case "8":
+			case "9":
+				try {
+					System.out.println(this.house.status());	
+				}
+				catch(Exception e) {
+					System.err.println("Unable to get system heartbeat");
+				}
+				
 				break;
 			case "0":
 				toReturn = false;

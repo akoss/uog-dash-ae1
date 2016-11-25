@@ -16,11 +16,13 @@ public class AuctionHouseServer {
         @Override
         public void run() {
 			try {
+				System.out.println("Saving data...");
 				OutputStream outStream = new FileOutputStream("state.ser");
 				ObjectOutputStream fileObjectOut = new ObjectOutputStream(outStream);
 				fileObjectOut.writeObject(this.house);
 				fileObjectOut.close();
 				outStream.close();
+				System.out.println("Saved");
 			}
 			catch(FileNotFoundException e) {
 				System.out.println("\nFileNotFoundException: " + e);
@@ -41,8 +43,8 @@ public class AuctionHouseServer {
 	        houseimpl = (AuctionHouseImpl) fileObjectIn.readObject();
 	        fileObjectIn.close();
 	        inStream.close();	
-
 	        houseimpl.republish();
+	        System.out.println("Using saved data during startup");
 		}
 		catch(Exception e) {
 			System.err.println("Exception during file load " + e);
@@ -52,6 +54,7 @@ public class AuctionHouseServer {
 		try {
 			if(houseimpl == null) {
 				houseimpl = new AuctionHouseImpl();
+				System.out.println("Starting from scratch");
 			}
 
 			AuctionHouse house = (AuctionHouse) UnicastRemoteObject.exportObject(houseimpl, 0);

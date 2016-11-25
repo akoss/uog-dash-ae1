@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.rmi.server.UnicastRemoteObject;
 import java.io.Serializable;
 import java.io.*; 
+import java.util.Calendar;
 
 public class AuctionHouseImpl implements AuctionHouse, Serializable {
 
@@ -35,7 +36,7 @@ public class AuctionHouseImpl implements AuctionHouse, Serializable {
     public int createAuction(String name, int runsFor, double minimumValue, String uploader) throws java.rmi.RemoteException {
         AuctionImpl auctionimpl = new AuctionImpl(currentkey++, name, runsFor, minimumValue, uploader, this.q);
         Auction auct = (Auction) UnicastRemoteObject.exportObject(auctionimpl, 0);
-
+        System.out.println("Creating new auction: " + name + " / " + runsFor + ", by " + uploader);
         auctions.put(auctionimpl.id(), auctionimpl); 
         auctionStubs.put(auctionimpl.id(), auct); 
 
@@ -63,5 +64,9 @@ public class AuctionHouseImpl implements AuctionHouse, Serializable {
             }
             
         }
+    }
+
+    public String status() throws java.rmi.RemoteException {
+        return "Number of Device on Longpoll: " + q.numberOfConnections() + "\nEvent counter is at: " + currentkey + "\nTime on server: " + Calendar.getInstance().getTime();
     }
 }
