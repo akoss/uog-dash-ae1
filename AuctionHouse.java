@@ -10,4 +10,3 @@ public interface AuctionHouse extends java.rmi.Remote {
 
 	public Auction getAuction(int id) throws java.rmi.RemoteException;
 }
-

@@ -14,7 +14,6 @@ public class AuctionHouseImpl implements AuctionHouse, Serializable {
 
     private int currentkey; 
 
-    @SuppressWarnings("unchecked")
     public AuctionHouseImpl() throws java.rmi.RemoteException {
         super();
 
@@ -54,7 +53,10 @@ public class AuctionHouseImpl implements AuctionHouse, Serializable {
     public void republish() {
         for(Map.Entry<Integer, AuctionImpl> entry : auctions.entrySet()) {
             try {
-                auctionStubs.put(entry.getKey(),((Auction) UnicastRemoteObject.exportObject(entry.getValue(), 0)));    
+                auctionStubs.put(entry.getKey(),((Auction) UnicastRemoteObject.exportObject(entry.getValue(), 0)));
+                if(!entry.getValue().isFinished()){
+                    entry.getValue().setupTimer();    
+                }
             }
             catch(Exception e){
                 System.err.println("Error during republish: " + e);

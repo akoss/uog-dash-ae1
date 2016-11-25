@@ -73,9 +73,6 @@ public class AuctionImpl implements Auction, Serializable {
     }
 
     public double currentBid(String bidder) throws java.rmi.RemoteException {
-        if(!bids.containsKey(bidder)) {
-            System.err.println("nincs ott geci");
-        }
         return bids.containsKey(bidder) ? bids.get(bidder).getBid() : 0;
     }
 
