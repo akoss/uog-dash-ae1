@@ -6,6 +6,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.io.Serializable;
 import java.io.*; 
 import java.util.Calendar;
+import java.lang.Runtime;
 
 public class AuctionHouseImpl implements AuctionHouse, Serializable {
 
@@ -39,7 +40,7 @@ public class AuctionHouseImpl implements AuctionHouse, Serializable {
         System.out.println("Creating new auction: " + name + " / " + runsFor + ", by " + uploader);
         auctions.put(auctionimpl.id(), auctionimpl); 
         auctionStubs.put(auctionimpl.id(), auct); 
-
+        this.saveState(); 
         return auct.id();
     }
 
@@ -67,6 +68,27 @@ public class AuctionHouseImpl implements AuctionHouse, Serializable {
     }
 
     public String status() throws java.rmi.RemoteException {
-        return "Number of Device on Longpoll: " + q.numberOfConnections() + "\nEvent counter is at: " + currentkey + "\nTime on server: " + Calendar.getInstance().getTime();
+        return "Number of Device on Longpoll: " + q.numberOfConnections() + "\nEvent counter is at: " + currentkey + "\nTime on server: " + Calendar.getInstance().getTime() + "\nUsed memory: " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) + "\nFree memory: " + Runtime.getRuntime().freeMemory();
+    }
+
+    public boolean saveState() {
+        try {
+            System.out.println("Saving data...");
+            OutputStream outStream = new FileOutputStream("state.ser");
+            ObjectOutputStream fileObjectOut = new ObjectOutputStream(outStream);
+            fileObjectOut.writeObject(this);
+            fileObjectOut.close();
+            outStream.close();
+            System.out.println("Saved");
+            return true; 
+        }
+        catch(FileNotFoundException e) {
+            System.err.println("\nFileNotFoundException: " + e);
+            return false;
+        }
+        catch(IOException e) {
+            System.err.println("\nIOException: " + e);
+            return false;
+        }
     }
 }

@@ -77,22 +77,38 @@ public class AuctionHouseClient implements Serializable {
 		return sc.nextLine();
 	}
 
-	private void processMessages() {
-		messageProcessor = new Thread(new Runnable() {
-			 public void run() {
-			 	boolean stop = false;
-				while(!stop && !messageProcessor.isInterrupted()) {
-					try {
-						System.out.println("\n-- System Message --\n" + house.longpoll(uid).toString() + "\n--------------------\n");  
-					}
-					catch(RemoteException e) {
-						System.err.println("\nError in longpoll. Connection lost.");
-						stop = true;
-						System.exit(1);
-					}
+    private class MessageProcessor extends Thread  {
+        private AuctionHouse house; 
+
+        public MessageProcessor(AuctionHouse house) {
+            this.house = house;
+        }
+
+        @Override
+        public void run() {
+		 	boolean stop = false;
+			while(!stop && !messageProcessor.isInterrupted()) {
+				try {
+					System.out.println("\n-- System Message --\n" + house.longpoll(uid).toString() + "\n--------------------\n");  
 				}
-			 }
-		});  
+				catch(RemoteException e) {
+					System.err.println("\nError in longpoll. Connection lost.");
+					try {
+						System.err.println(this.house.status());
+					}
+					catch(Exception e2) {
+						System.err.println("Unable to display heartbeat. \nHeartbeat exception: " + e2);
+					}
+					
+					stop = true;
+					System.exit(1);
+				}
+			}
+        }
+    }
+
+	private void processMessages() {
+		messageProcessor = new Thread(new MessageProcessor(this.house));  
 		messageProcessor.start();
 	}
 
@@ -128,6 +144,7 @@ public class AuctionHouseClient implements Serializable {
 		System.out.println("\n\n1 - Get Auctions");
 		System.out.println("2 - View Auction by ID");
 		System.out.println("3 - Add Auction");
+		System.out.println("4 - Delete Old Auctions");
 		System.out.println("");
 		System.out.println("9 - System Status");
 		System.out.println("0 - Exit");
@@ -193,6 +210,11 @@ public class AuctionHouseClient implements Serializable {
 					System.out.println("Unable to create new auction");
 				}
 				break;
+
+			case "4": 
+				
+				break;
+
 			case "9":
 				try {
 					System.out.println(this.house.status());	

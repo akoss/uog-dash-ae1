@@ -15,21 +15,7 @@ public class AuctionHouseServer {
 
         @Override
         public void run() {
-			try {
-				System.out.println("Saving data...");
-				OutputStream outStream = new FileOutputStream("state.ser");
-				ObjectOutputStream fileObjectOut = new ObjectOutputStream(outStream);
-				fileObjectOut.writeObject(this.house);
-				fileObjectOut.close();
-				outStream.close();
-				System.out.println("Saved");
-			}
-			catch(FileNotFoundException e) {
-				System.out.println("\nFileNotFoundException: " + e);
-			}
-			catch(IOException e) {
-				System.out.println("\nIOException: " + e);
-			}
+        	house.saveState(); 
         }
     }
 
